@@ -10,6 +10,7 @@ class App extends Component {
         this.state = {
             history: [{ squares: Array(9).fill(null) }],
             xIsNext: true,
+            step: 0,
             winner: null
         }
     }
@@ -24,12 +25,11 @@ class App extends Component {
     }
 
     getCurrentSquare() {
-        const history = this.state.history;
-        return history[history.length - 1];
+        return this.state.history[this.state.step];
     }
     
     handleClick(i) {
-        const history = this.state.history;
+        const history = this.state.history.slice(0, this.state.step + 1);
         const current = this.getCurrentSquare();
         const squares = current.squares.slice();
         
@@ -39,21 +39,46 @@ class App extends Component {
         squares[i] = this.nextPlayer();
         this.setState({
             history: history.concat([{ squares }]),
+            step: history.length,
             xIsNext: !this.state.xIsNext,
             winner: calculateWinner(squares)
+        });
+
+        console.log(history.length);
+    }
+
+    jumpTo(step) {
+        this.setState({
+            step,
+            xIsNext: (step % 2) === 0,
+            winner: (step === this.state.step ? this.state.winner : null)
+        });
+    }
+
+    getMoves() {
+        return this.state.history.map((step, move) => {
+            const desc = move ? `Go to move #${move}` : 'Restart game';
+            return (
+                <li key={move}>
+                    <button onClick={() => this.jumpTo(move)}>
+                        {desc}
+                    </button>
+                </li>
+            );
         });
     }
 
     render() {
-        const current = this.getCurrentSquare();
         return (
             <div className="game">
                 <div className="game-board">
-                    <Board squares={current.squares} onClick={(i) => this.handleClick(i)} />
+                    <Board 
+                        squares={this.getCurrentSquare().squares} 
+                        onClick={(i) => this.handleClick(i)} />
                 </div>
                 <div className="game-info">
                     <div>{this.updateStatus()}</div>
-                    <ol></ol>
+                    <ol>{this.getMoves()}</ol>
                 </div>
             </div>
         );
