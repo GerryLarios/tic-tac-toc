@@ -3,6 +3,7 @@ import './App.css';
 
 import Board from "./components/Board";
 import { calculateWinner } from './helpers/helpers';
+import MoveButton from './components/MoveButton';
 
 class App extends Component {
     constructor(props) {
@@ -55,16 +56,15 @@ class App extends Component {
         });
     }
 
-    getMoves() {
+    renderMoveButtons() {
         return this.state.history.map((step, move) => {
             const desc = move ? `Go to move #${move}` : 'Restart game';
             return (
-                <li key={move}>
-                    <button onClick={() => this.jumpTo(move)}>
-                        {desc}
-                    </button>
-                </li>
-            );
+                <MoveButton 
+                    key={move} 
+                    text={desc} 
+                    onClick={() => this.jumpTo(move)} />
+            )
         });
     }
 
@@ -78,7 +78,7 @@ class App extends Component {
                 </div>
                 <div className="game-info">
                     <div>{this.updateStatus()}</div>
-                    <ol>{this.getMoves()}</ol>
+                    <ol>{this.renderMoveButtons()}</ol>
                 </div>
             </div>
         );
