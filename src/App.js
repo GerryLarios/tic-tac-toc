@@ -4,6 +4,7 @@ import './App.css';
 import Board from "./components/Board";
 import { calculateWinner, squareCoordinates } from './helpers/helpers';
 import MoveButton from './components/MoveButton';
+import SortButton from './components/SortButton';
 
 class App extends Component {
     constructor(props) {
@@ -12,7 +13,8 @@ class App extends Component {
             history: [{ squares: Array(9).fill(null) }],
             xIsNext: true,
             step: 0,
-            winner: null
+            winner: null,
+            ascending: true
         }
     }
 
@@ -53,9 +55,13 @@ class App extends Component {
         });
     }
 
+    sortToggle() {
+        this.setState({ ascending: !this.state.ascending });
+    }
+
     renderMoveButtons() {
         let prev = this.state.history[0];
-        return this.state.history.map((current, move) => {
+        const buttons = this.state.history.map((current, move) => {
             const text = move ? `Go to move #${move} on ${squareCoordinates(prev.squares, current.squares)}` : 'Restart game';
             const className = this.state.step === move ? "selected" : "";
             prev = current;
@@ -67,6 +73,8 @@ class App extends Component {
                     onClick={() => this.jumpTo(move)} />
             );
         });
+
+        return this.state.ascending ? buttons : buttons.slice(0).reverse();
     }
 
     render() {
@@ -78,7 +86,12 @@ class App extends Component {
                         onClick={(i) => this.handleClick(i)} />
                 </div>
                 <div className="game-info">
-                    <div>{this.updateStatus()}</div>
+                    <div>
+                        <SortButton 
+                            ascending={this.state.ascending} 
+                            onClick={() => this.sortToggle()} />
+                        {this.updateStatus()}
+                    </div>
                     <ol>{this.renderMoveButtons()}</ol>
                 </div>
             </div>
