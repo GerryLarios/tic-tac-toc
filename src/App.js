@@ -14,7 +14,8 @@ class App extends Component {
             xIsNext: true,
             step: 0,
             winner: null,
-            ascending: true
+            ascending: true,
+            count: 0
         }
     }
 
@@ -32,19 +33,23 @@ class App extends Component {
     }
     
     handleClick(i) {
-        const history = this.state.history.slice(0, this.state.step + 1);
-        const current = this.getLastSquareSet();
-        const squares = current.squares.slice();
+        // First: Check if is allowed to fill the square with index 'i'
+        const squares = this.getLastSquareSet().squares.slice();
+        if (this.allowedToFill(squares[i])) {
+            squares[i] = this.nextPlayer();
+            const history = this.state.history.slice(0, this.state.step + 1);
+            const winner = calculateWinner(squares);        
+            this.setState({
+                history: history.concat([ { squares } ]),
+                step: history.length,
+                xIsNext: !this.state.xIsNext,
+                winner
+            });
+        }
+    }
 
-        if (this.state.winner || squares[i]) return;
-        
-        squares[i] = this.nextPlayer();
-        this.setState({
-            history: history.concat([{ squares }]),
-            step: history.length,
-            xIsNext: !this.state.xIsNext,
-            winner: calculateWinner(squares)
-        });
+    allowedToFill(square) {
+        return this.state.winner || square ? false : true
     }
 
     jumpTo(step) {
@@ -63,17 +68,15 @@ class App extends Component {
         let prev = this.state.history[0];
         const buttons = this.state.history.map((current, move) => {
             const text = move ? `Go to move #${move} on ${squareCoordinates(prev.squares, current.squares)}` : 'Restart game';
-            const className = this.state.step === move ? "selected" : "";
             prev = current;
             return (
                 <MoveButton 
                     key={move}
-                    classname={className}
+                    classname={this.state.step === move ? "selected" : ""}
                     text={text}
                     onClick={() => this.jumpTo(move)} />
             );
         });
-
         return this.state.ascending ? buttons : buttons.slice(0).reverse();
     }
 

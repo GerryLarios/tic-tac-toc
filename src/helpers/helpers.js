@@ -20,7 +20,6 @@ export function calculateWinner(squares) {
 
 export function squareCoordinates(prev, current) {
     const squareIndex = getDiff(prev, current);
-    console.log(squareIndex);
     return `(${getCol(squareIndex)}, ${getRow(squareIndex)})`
 }
 
