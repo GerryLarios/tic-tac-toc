@@ -17,3 +17,24 @@ export function calculateWinner(squares) {
     }
     return null;
 }
+
+export function squareCoordinates(prev, current) {
+    const squareIndex = getDiff(prev, current);
+    console.log(squareIndex);
+    return `(${getCol(squareIndex)}, ${getRow(squareIndex)})`
+}
+
+export function getDiff(prev, current) {
+    for (let i = 0; i < 9; i++)
+        if (prev[i] !== current[i])
+            return i;
+    return null;
+}
+
+export function getRow(squareIndex) {
+    return Math.floor( squareIndex / 3) + 1;
+}
+
+export function getCol(squareIndex) {
+    return Math.floor( squareIndex % 3 ) + 1;
+}
