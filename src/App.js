@@ -28,7 +28,7 @@ class App extends Component {
 
         if (winner)
             return `Winner: ${winner}`;
-        else if (this.checkEmptySquares() == 0 )
+        else if (this.checkEmptySquares() === 0 )
             return `Draw`;
 
         return `Next player: ${this.nextPlayer()}`;
