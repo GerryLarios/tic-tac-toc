@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 
 import Board from "./components/Board";
-import { calculateWinner } from './helpers/helpers';
+import { calculateWinner, squareCoordinates } from './helpers/helpers';
 import MoveButton from './components/MoveButton';
 
 class App extends Component {
@@ -25,17 +25,16 @@ class App extends Component {
         return winner ? `Winner: ${winner}` : `Next player: ${this.nextPlayer()}`;
     }
 
-    getCurrentSquare() {
+    getLastSquareSet() {
         return this.state.history[this.state.step];
     }
     
     handleClick(i) {
         const history = this.state.history.slice(0, this.state.step + 1);
-        const current = this.getCurrentSquare();
+        const current = this.getLastSquareSet();
         const squares = current.squares.slice();
-        
-        if (this.state.winner || squares[i])
-            return;
+
+        if (this.state.winner || squares[i]) return;
         
         squares[i] = this.nextPlayer();
         this.setState({
@@ -44,8 +43,6 @@ class App extends Component {
             xIsNext: !this.state.xIsNext,
             winner: calculateWinner(squares)
         });
-
-        console.log(history.length);
     }
 
     jumpTo(step) {
@@ -57,14 +54,26 @@ class App extends Component {
     }
 
     renderMoveButtons() {
-        return this.state.history.map((step, move) => {
-            const desc = move ? `Go to move #${move}` : 'Restart game';
+        let prev = this.state.history[0];
+        return this.state.history.map((current, move) => {
+            
+            let text;
+
+            if (move) {
+                const location = squareCoordinates(prev.squares, current.squares);
+                text = `Go to move #${move} on ${location}`;
+            } else {
+                text = 'Restart game';
+            }
+            
+            prev = current;
+            
             return (
                 <MoveButton 
                     key={move} 
-                    text={desc} 
+                    text={text} 
                     onClick={() => this.jumpTo(move)} />
-            )
+            );
         });
     }
 
@@ -73,7 +82,7 @@ class App extends Component {
             <div className="game">
                 <div className="game-board">
                     <Board 
-                        squares={this.getCurrentSquare().squares} 
+                        squares={this.getLastSquareSet().squares} 
                         onClick={(i) => this.handleClick(i)} />
                 </div>
                 <div className="game-info">
