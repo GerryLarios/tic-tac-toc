@@ -57,8 +57,8 @@ class App extends Component {
         let prev = this.state.history[0];
         return this.state.history.map((current, move) => {
             const text = move ? `Go to move #${move} on ${squareCoordinates(prev.squares, current.squares)}` : 'Restart game';
-            prev = current;
             const className = this.state.step === move ? "selected" : "";
+            prev = current;
             return (
                 <MoveButton 
                     key={move}
