@@ -14,8 +14,8 @@ class App extends Component {
             xIsNext: true,
             step: 0,
             winner: null,
-            ascending: true,
-            count: 0
+            lines: [],
+            ascending: true
         }
     }
 
@@ -38,12 +38,13 @@ class App extends Component {
         if (this.allowedToFill(squares[i])) {
             squares[i] = this.nextPlayer();
             const history = this.state.history.slice(0, this.state.step + 1);
-            const winner = calculateWinner(squares);        
+            const info = calculateWinner(squares);      
             this.setState({
                 history: history.concat([ { squares } ]),
                 step: history.length,
                 xIsNext: !this.state.xIsNext,
-                winner
+                winner: info.player,
+                lines: info.lines
             });
         }
     }
@@ -84,7 +85,9 @@ class App extends Component {
         return (
             <div className="game">
                 <div className="game-board">
-                    <Board 
+                    <Board
+                        endgame={this.state.winner ? true : false}
+                        lines={this.state.lines}
                         squares={this.getLastSquareSet().squares} 
                         onClick={(i) => this.handleClick(i)} />
                 </div>

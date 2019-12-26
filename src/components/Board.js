@@ -8,11 +8,22 @@ class Board extends Component {
     renderSquare(i) {
         return (
             <Square
+                className={this.buildCssClass(i)}
                 key={i}
                 value={this.props.squares[i]} 
                 onClick={() => this.props.onClick(i)}
             />
         );
+    }
+
+    buildCssClass(i) {
+        let className = "square ";
+        if (this.props.lines.includes(i))
+            className += "highlight";
+        else if (this.props.endgame)
+            className += "borderless";
+        
+        return className;
     }
 
     renderRows() {

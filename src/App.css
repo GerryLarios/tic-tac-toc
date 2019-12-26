@@ -47,3 +47,12 @@ ol, ul {
 .selected {
     font-weight: bold;
 }
+
+.highlight {
+    border-color: yellow;
+    border-width: 3px;
+}
+
+.borderless {
+    border-color: transparent;
+}
