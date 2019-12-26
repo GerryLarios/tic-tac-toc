@@ -1,7 +1,7 @@
 import React from "react";
 
-export default function MoveButton({ text, onClick }) {
+export default function MoveButton({ text, onClick, classname }) {
     return (
-        <li><button onClick={onClick}>{text}</button></li>
+        <li><button className={classname} onClick={onClick}>{text}</button></li>
     );
 }

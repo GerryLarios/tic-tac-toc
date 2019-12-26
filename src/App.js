@@ -56,22 +56,14 @@ class App extends Component {
     renderMoveButtons() {
         let prev = this.state.history[0];
         return this.state.history.map((current, move) => {
-            
-            let text;
-
-            if (move) {
-                const location = squareCoordinates(prev.squares, current.squares);
-                text = `Go to move #${move} on ${location}`;
-            } else {
-                text = 'Restart game';
-            }
-            
+            const text = move ? `Go to move #${move} on ${squareCoordinates(prev.squares, current.squares)}` : 'Restart game';
             prev = current;
-            
+            const className = this.state.step === move ? "selected" : "";
             return (
                 <MoveButton 
-                    key={move} 
-                    text={text} 
+                    key={move}
+                    classname={className}
+                    text={text}
                     onClick={() => this.jumpTo(move)} />
             );
         });
