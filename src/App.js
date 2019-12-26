@@ -25,20 +25,29 @@ class App extends Component {
 
     updateStatus() {
         const winner = this.state.winner;
-        return winner ? `Winner: ${winner}` : `Next player: ${this.nextPlayer()}`;
+
+        if (winner)
+            return `Winner: ${winner}`;
+        else if (this.checkEmptySquares() == 0 )
+            return `Draw`;
+
+        return `Next player: ${this.nextPlayer()}`;
     }
 
     getLastSquareSet() {
-        return this.state.history[this.state.step];
+        return this.state.history[this.state.step].squares;
     }
     
+    checkEmptySquares() {
+        return this.getLastSquareSet().filter((square) => square === null).length;
+    }
+
     handleClick(i) {
-        // First: Check if is allowed to fill the square with index 'i'
-        const squares = this.getLastSquareSet().squares.slice();
+        const squares = this.getLastSquareSet().slice();
         if (this.allowedToFill(squares[i])) {
             squares[i] = this.nextPlayer();
             const history = this.state.history.slice(0, this.state.step + 1);
-            const info = calculateWinner(squares);      
+            const info = calculateWinner(squares);
             this.setState({
                 history: history.concat([ { squares } ]),
                 step: history.length,
@@ -88,7 +97,7 @@ class App extends Component {
                     <Board
                         endgame={this.state.winner ? true : false}
                         lines={this.state.lines}
-                        squares={this.getLastSquareSet().squares} 
+                        squares={this.getLastSquareSet()} 
                         onClick={(i) => this.handleClick(i)} />
                 </div>
                 <div className="game-info">
