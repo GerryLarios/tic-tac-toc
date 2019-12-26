@@ -13,9 +13,9 @@ export function calculateWinner(squares) {
     for (let i = 0; i < 8; i++) {
         const [a, b, c] = lines[i];
         if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c])
-            return squares[a];
+            return { player: squares[a], lines: [a, b, c] };
     }
-    return null;
+    return { player: null, lines: [] };
 }
 
 export function squareCoordinates(prev, current) {
